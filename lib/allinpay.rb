@@ -7,4 +7,5 @@ module Allinpay
   # Your code goes here...
   autoload :Client, 'allinpay/client'
   autoload :Signature, 'allinpay/signature'
+  autoload :Service, 'allinpay/service'
 end
