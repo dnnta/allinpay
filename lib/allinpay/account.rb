@@ -9,6 +9,17 @@ module Allinpay
     extend ActiveSupport::Concern
     included do
 
+      # 询商户在通联的虚拟账户基本信息
+      #
+      
+      def account(account_number = nil)
+        params = set_infomation('300000',{ REQTIME: timestamps, LEVEL: 9 })
+        params[:ACQUERYREQ] = { ACCTNO: account_number} if account_number
+        res = conn.request(params)
+        return result_wrap(:fail, res) if res["INFO"]["RET_CODE"] != "0000"
+        return result_wrap(:success, res)
+      end
+
       # 账户充值接口
       #
       # Paramters:
