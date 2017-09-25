@@ -31,6 +31,7 @@ module Allinpay
         charge_info[:REMARK] = options[:remark] if options[:remark]
         params[:CHARGEREQ] = charge_info
         res = conn.request(params)
+        return result_wrap(:fail, res) if res["TRANSRET"]["RET_CODE"] != "0000"
         return result_wrap(:success, res)
       end
     end
