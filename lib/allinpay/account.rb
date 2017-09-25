@@ -20,7 +20,7 @@ module Allinpay
       #   summary 网银交易备注
       #   remark 商户交易备注
       
-      def charge(bank_account, amount, business_code = '100005', options = {})
+      def charge(bank_account, amount, business_code = '19900', options = {})
         params = set_infomation('300006',{ REQTIME: timestamps, LEVEL: 9 })
         charge_info = { 
           BUSINESS_CODE: business_code,
@@ -31,7 +31,7 @@ module Allinpay
         charge_info[:REMARK] = options[:remark] if options[:remark]
         params[:CHARGEREQ] = charge_info
         res = conn.request(params)
-        return result_wrap(:fail, res) if res["TRANSRET"]["RET_CODE"] != "0000"
+        return result_wrap(:fail, res) if res["INFO"]["RET_CODE"] != "0000"
         return result_wrap(:success, res)
       end
     end

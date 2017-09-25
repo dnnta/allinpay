@@ -26,6 +26,7 @@ module Allinpay
         }
         params[:TRANS] = tran_body
         res = conn.request(params)
+        return result_wrap(:fail, res) if res_info["RET_CODE"] != "0000"
         return result_wrap(:success, res)
       end
 
