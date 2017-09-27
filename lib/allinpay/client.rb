@@ -36,8 +36,8 @@ module Allinpay
       Time.now.strftime('%Y%m%d%H%M%S')
     end
 
-    def result_wrap(status, data)
-      return {"status" => status, "data" => data}
+    def result_wrap(status, data, request = nil)
+      return { "status" => status.to_s, "data" => data, "request" => request }
     end
   end
 end

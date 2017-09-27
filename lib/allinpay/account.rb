@@ -16,8 +16,8 @@ module Allinpay
         params = set_infomation('300000',{ REQTIME: timestamps, LEVEL: 9 })
         params[:ACQUERYREQ] = { ACCTNO: account_number} if account_number
         res = conn.request(params)
-        return result_wrap(:fail, res) if res["INFO"]["RET_CODE"] != "0000"
-        return result_wrap(:success, res)
+        return result_wrap(:fail, res, params) if res["INFO"]["RET_CODE"] != "0000"
+        return result_wrap(:success, res, params)
       end
 
       # 账户充值接口
@@ -42,8 +42,8 @@ module Allinpay
         charge_info[:REMARK] = options[:remark] if options[:remark]
         params[:CHARGEREQ] = charge_info
         res = conn.request(params)
-        return result_wrap(:fail, res) if res["INFO"]["RET_CODE"] != "0000"
-        return result_wrap(:success, res)
+        return result_wrap(:fail, res, params) if res["INFO"]["RET_CODE"] != "0000"
+        return result_wrap(:success, res, params)
       end
     end
   end

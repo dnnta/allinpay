@@ -26,8 +26,8 @@ module Allinpay
         }
         params[:TRANS] = tran_body
         res = conn.request(params)
-        return result_wrap(:fail, res) if res_info["RET_CODE"] != "0000"
-        return result_wrap(:success, res)
+        return result_wrap(:fail, res, params) if res_info["RET_CODE"] != "0000"
+        return result_wrap(:success, res, params)
       end
 
       # 通联支付批量付款
@@ -44,7 +44,7 @@ module Allinpay
           sn = index.to_s.rjust(4, '0')
           amount =  (item[:amount].to_f * 100).to_i
           details << {
-            SN: sn,
+            SN: item[:number] || sn,
             E_USER_CODE: 1,
             BANK_CODE: item[:bank_code],
             ACCOUNT_TYPE: item[:account_type],
@@ -60,8 +60,8 @@ module Allinpay
         params[:BODY] = { TRANS_SUM: trans_sum, TRANS_DETAILS: details }
         res = conn.request(params)
         res_info = res["INFO"]
-        return result_wrap(:fail, res) if res_info["RET_CODE"] != "0000"
-        query_batch_pay(res_info["REQ_SN"])
+        return result_wrap(:fail, res, params) if res_info["RET_CODE"] != "0000"
+        return result_wrap(:success, res, params)
       end
     end
   end

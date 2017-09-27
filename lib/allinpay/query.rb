@@ -27,7 +27,7 @@ module Allinpay
         params[:QTRANSREQ] = tran_body
         res = conn.request(params)
         return result_wrap(:fail, res) if res["INFO"]["RET_CODE"] != "0000"
-        return result_wrap(:success, res)
+        return result_wrap(:success, res, params)
       end
     end
   end
