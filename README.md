@@ -1,35 +1,39 @@
-# Allinpay
+[![Gem Version](https://badge.fury.io/rb/allinpay.svg)](https://badge.fury.io/rb/allinpay)
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/allinpay`. To experiment with that code, run `bin/console` for an interactive prompt.
+## 通联支付Ruby接口
 
-TODO: Delete this and the text above, and describe your gem
+### 安装
 
-## Installation
-
-Add this line to your application's Gemfile:
+将以下代码添加到 Gemfile:
 
 ```ruby
 gem 'allinpay'
 ```
 
-And then execute:
+然后执行
 
     $ bundle
 
-Or install it yourself as:
+或者直接运行以下命令安装:
 
     $ gem install allinpay
 
-## Usage
+### 使用
 
-TODO: Write usage instructions here
+在Rails中使用, 需要将以下代码添加到config/initializers/allinpay.rb中
 
-## Development
+```ruby
+require 'allinpay'
 
-After checking out the repo, run `bin/setup` to install dependencies. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+options = {
+  merchant: '商户号',
+  username: '用户名: 商户号 + 02',
+  password: '登录密码',
+  env: '使用环境',
+  private_path: '私钥文件',
+  private_password: '私钥密码',
+  public_path: '公钥文件'
+}
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
-
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/allinpay.
+$allinpay_client = Allinpay::Client.new(options)
+```
