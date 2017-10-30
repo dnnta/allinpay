@@ -18,6 +18,7 @@ module Allinpay
       # @option options [String] :status 状态,  如果开始时间和结束时间不为空，该字段生效，不可为空
       # @option options [String] :start_day 开始时间, 若不填QUERY_SN则必填
       # @option options [String] :end_day 结束时间, 填了开始时间必填
+      
       def query_batch_pay(sn, options = {})
         params = set_infomation('200004')
         tran_body = { MERCHANT_ID: merchant, QUERY_SN: sn }
