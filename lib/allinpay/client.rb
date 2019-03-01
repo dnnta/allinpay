@@ -1,80 +1,38 @@
+require 'allinpay/helper/common'
+require 'allinpay/api'
 module Allinpay
-  # 通联支付
-  # @attr merchant [String] 通联支付商户号
-  # @attr username  [String] 通联支付用户名
-  # @attr password  [String] 通联支付密码
-  # @attr public_path  [String]  公共证书位置
-  # @attr private_path  [String]  私密证书位置
-  # @attr private_password [String]  私密证书密码
-  # @attr conn [Request] 请求信息
-
-
   class Client
-    attr_accessor :merchant, :username, :password, :conn
+    include Api
+    include Helper::Common
 
-    class << self
-      attr_accessor :private_path, :public_path, :private_password
+    attr_accessor :configurate, :conn
+
+    def initialize(config)
+      @configurate = config
+      @conn = Faraday.new request_url, ssl: ssl_options
     end
 
-    # 初始化通联支付
-    #
-    # @param options [Hash] 交易信息
-    # @option options [String] :merchant 通联支付商户号
-    # @option options [String] :username 通联支付用户名
-    # @option options [String] :password 通联支付密码
-    # @option options [String] :env 设置环境
-    # @option options [String] :public_path 公共证书位置
-    # @option options [String] :private_path 私密证书位置
-    # @option options [String] :private_password 私密证书密码
+    def request(params)
+      params[:INFO][:SIGNED_MSG] = Signature.generate(parse_xml(params)).unpack('H*').first
+      body = parse_xml(params)
+      response = conn.post do |req|
+        req.headers['Content-Type'] = 'text/xml'
+        req.body = body
+      end
 
-    def initialize(options)
-      @merchant = options[:merchant]
-      @username = options[:username]
-      @password = options[:password]
-      env = options[:env] || 'development'
-      @conn = Allinpay::Service.connection(env, options)
+      return raise "HTTP Connection has error." if response.status != 200
+      result = response.body
+      result_xml = Hash.from_xml(result)
+      return raise "Signature verify failed." if !verify_signature?(result, result_xml)
+      return result_xml['AIPG']
     end
 
-    private
-
-    # 设置基本信息
-    #
-    # @param code [String] 交易代码
-    # @param options [Hash] 其它信息
-    #
-    # return [Hash] 
-
-    def set_infomation(code, options = {})
-      info = {
-        TRX_CODE: code,
-        VERSION: '03', 
-        DATA_TYPE: '2',
-        USER_NAME: username, 
-        USER_PASS: password, 
-        REQ_SN: req_sn
-      }.merge(options)
-      return { INFO: info }
+    def verify_signature?(res, result)
+      signed = result["AIPG"]["INFO"]["SIGNED_MSG"]
+      xml_body = res.encode('utf-8', 'gbk').gsub(/<SIGNED_MSG>.*<\/SIGNED_MSG>/, '')
+      Signature.verify?(xml_body.encode('gbk', 'utf-8'), [signed].pack("H*"))
     end
 
-    # 生成交易序号
 
-    def req_sn
-      merchant + timestamps + rand(1000).to_s.ljust(4, '0')
-    end
-
-    # 生成时间
-
-    def timestamps
-      Time.now.strftime('%Y%m%d%H%M%S')
-    end
-
-    # 将结果重新包装
-    # @param status [String] 返回状态
-    # @param data [String, Hash, Array, nil] 包装数据
-    # @param request [Hash] 请求数据 
-
-    def result_wrap(status, data, request = nil)
-      return { "status" => status.to_s, "data" => data, "request" => request }
-    end
   end
 end

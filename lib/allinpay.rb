@@ -11,9 +11,23 @@ module Allinpay
   autoload :Account, 'allinpay/account'
   autoload :Payment, 'allinpay/payment'
   autoload :Query, 'allinpay/query'
+  autoload :api_loader, 'allinpay/api_loader'
+  autoload :configuration, 'allinpay/configuration'
   
-  Client.include Account
-  Client.include Payment
-  Client.include Query
+  
+  class << self
+    def configuration
+      yield configure
+    end
+
+    def configure
+      @config ||= Configuration.new
+    end
+
+    def api
+      @allinpay ||= ApiLoader.with(configure) 
+    end
+  end
+
 end
 
