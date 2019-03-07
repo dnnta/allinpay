@@ -7,7 +7,6 @@ module Allinpay
   # @attr public_path  [String]  公共证书位置
   # @attr private_path  [String]  私密证书位置
   # @attr private_password [String]  私密证书密码
-  # @attr conn [Request] 请求信息
 
     attr_accessor :merchant, :username, :password, :env, :private_path,
                   :private_password, :public_path, :ssl
@@ -16,4 +15,5 @@ module Allinpay
       @env = 'development'
       @ssl = false
     end
+  end
 end

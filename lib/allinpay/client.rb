@@ -1,11 +1,14 @@
-require 'allinpay/helper/common'
 require 'allinpay/api'
+require 'allinpay/helper/service'
+require 'allinpay/helper/signature'
+
 module Allinpay
   class Client
     include Api
-    include Helper::Common
+    include Helper::Service
+    include Helper::Signature
 
-    attr_accessor :configurate, :conn
+    attr_accessor :configurate, :conn, :request_xml, :response_xml
 
     def initialize(config)
       @configurate = config
@@ -13,26 +16,23 @@ module Allinpay
     end
 
     def request(params)
-      params[:INFO][:SIGNED_MSG] = Signature.generate(parse_xml(params)).unpack('H*').first
+      params[:INFO][:SIGNED_MSG] = generate(parse_xml(params)).unpack('H*').first
       body = parse_xml(params)
+
       response = conn.post do |req|
         req.headers['Content-Type'] = 'text/xml'
         req.body = body
       end
 
       return raise "HTTP Connection has error." if response.status != 200
-      result = response.body
-      result_xml = Hash.from_xml(result)
-      return raise "Signature verify failed." if !verify_signature?(result, result_xml)
-      return result_xml['AIPG']
-    end
+      
+      @response_xml = response.body
+      result_xml = Hash.from_xml(response_xml)
 
-    def verify_signature?(res, result)
-      signed = result["AIPG"]["INFO"]["SIGNED_MSG"]
-      xml_body = res.encode('utf-8', 'gbk').gsub(/<SIGNED_MSG>.*<\/SIGNED_MSG>/, '')
-      Signature.verify?(xml_body.encode('gbk', 'utf-8'), [signed].pack("H*"))
+      return raise "Signature verify failed." if !verify_signature?(response_xml, result_xml)
+      
+      result_wrap
     end
-
 
   end
 end
