@@ -21,6 +21,7 @@ module Allinpay
 
       response = conn.post do |req|
         req.headers['Content-Type'] = 'text/xml'
+        req.options.timeout = 60           # open/read timeout in seconds
         req.body = body
       end
 
