@@ -44,13 +44,14 @@ module Allinpay
         trans_sum = {
           BUSINESS_CODE: '09900', 
           MERCHANT_ID: configurate.merchant, 
-          SUBMIT_TIME: timestamps
+          SUBMIT_TIME: timestamps,
+          TOTAL_ITEM: 0
         }
+        
         trans_sum[:TOTAL_SUM] = trans.inject(0) do |sum, item|
           sn = index.to_s.rjust(4, '0')
-          item =handle_params(item)
-          amount =  change_amount(item[:amount])
-          p amount, item[:number]
+          item = handle_params(item)
+          amount = change_amount(item[:amount])
 
           details << {
             SN: item[:number] || sn,
@@ -62,10 +63,10 @@ module Allinpay
             ACCOUNT_PROP: item[:account_prop],
             AMOUNT: amount
           }
-          index += 1
+          trans_sum[:TOTAL_ITEM] += 1
           amount + sum
         end
-        trans_sum[:TOTAL_ITEM] = index - 1
+
         params[:BODY] = { TRANS_SUM: trans_sum, TRANS_DETAILS: details }
         params
       end

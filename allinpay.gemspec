@@ -6,12 +6,12 @@ require "allinpay/version"
 Gem::Specification.new do |spec|
   spec.name          = "allinpay"
   spec.version       = Allinpay::VERSION
-  spec.authors       = ["ye.li"]
-  spec.email         = ["ye.li@mdslife.com"]
+  spec.authors       = ["qiang.ruan"]
+  spec.email         = ["ruan88qiang@sina.com"]
 
   spec.summary       = %q{Allinpay payment client}
   spec.description   = %q{Allinpay payment client}
-  spec.homepage      = "https://github.com/yeeli/allinpay"
+  spec.homepage      = "https://github.com/rqiang88/allinpay"
 
   if spec.respond_to?(:metadata)
     spec.metadata["allowed_push_host"] = "https://rubygems.org"
