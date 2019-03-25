@@ -13,7 +13,7 @@ module Allinpay
         res = result_xml['AIPG']
         res_info = res['INFO']
         response_xml.encode! 'utf-8','gbk'
-        status =  res_info["RET_CODE"] == "0000" ? 'success' : 'fail'
+        status =  res_info["RET_CODE"].to_s.in?(["0000", "4000" ]) ? 'success' : 'fail'
 
       	{ 
           "status" => status, 
