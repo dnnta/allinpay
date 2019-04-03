@@ -122,7 +122,8 @@ module Allinpay
 
       # 元转化成分
       def change_amount(amount)
-        (amount.to_f * 100).to_i
+        amount = amount.to_d * 100
+        amount.to_i
       end
 
       def handle_params options
