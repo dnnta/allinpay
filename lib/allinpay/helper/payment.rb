@@ -112,7 +112,7 @@ module Allinpay
 
       # 生成交易序号
       def req_sn
-        configurate.merchant + timestamps + rand(1000).to_s.ljust(4, '0')
+        configurate.merchant + timestamps + configurate.platform.to_s + rand(1000).to_s.ljust(4, '0')
       end
 
       # 生成时间

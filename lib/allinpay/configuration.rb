@@ -9,7 +9,7 @@ module Allinpay
   # @attr private_password [String]  私密证书密码
 
     attr_accessor :merchant, :username, :password, :env, :private_path,
-                  :private_password, :public_path, :ssl
+                  :private_password, :public_path, :ssl, :platform
     
     def initialize
       @env = 'development'
