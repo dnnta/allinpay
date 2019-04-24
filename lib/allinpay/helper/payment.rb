@@ -31,7 +31,9 @@ module Allinpay
           ACCOUNT_NO:  tran[:account_number],
           ACCOUNT_NAME: tran[:account_name],
           ACCOUNT_PROP: tran[:account_prop],
-          AMOUNT: change_amount(tran[:amount])
+          AMOUNT: change_amount(tran[:amount]),
+          SUMMARY: tran[:summary],
+          REMARK: tran[:remark]
         }
         params[:TRANS] = tran_body
         params
