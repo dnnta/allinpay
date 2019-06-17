@@ -19,20 +19,21 @@ module Allinpay
       params[:INFO][:SIGNED_MSG] = generate(parse_xml(params)).unpack('H*').first
       body = parse_xml(params)
 
-      response = conn.post do |req|
-        req.headers['Content-Type'] = 'text/xml'
-        req.options.timeout = 60           # open/read timeout in seconds
-        req.body = body
+      begin
+        response = conn.post do |req|
+          req.headers['Content-Type'] = 'text/xml'
+          req.options.timeout = 60 # open/read timeout in seconds
+          req.body = body
+        end
+        @response_xml = response.body
+        result_xml = Hash.from_xml(response_xml)
+        if !verify_signature?(response_xml, result_xml)
+          return {status: 'fail', msg: '返回验签不一致'}
+        end
+        result_wrap
+      rescue Exception => e
+        return {status: 'fail', msg: '请求出错'}
       end
-
-      return raise "HTTP Connection has error." if response.status != 200
-      
-      @response_xml = response.body
-      result_xml = Hash.from_xml(response_xml)
-
-      return raise "Signature verify failed." if !verify_signature?(response_xml, result_xml)
-      
-      result_wrap
     end
 
   end
