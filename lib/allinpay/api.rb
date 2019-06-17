@@ -52,6 +52,32 @@ module Allinpay
       request(params)
     end
 
+    # 签约短信
+    def contract_sms(options = {})
+      params = set_contract_sms_params options
+      request(params)
+    end
+
+    def contract(options = {})
+      params = set_contract_params options
+      request(params)
+    end
+
+    def card_bin(options = {})
+      params = set_card_bin_params options
+      request(params)
+    end
+
+    def withhold(options={})
+      params = set_withhold_params options
+      request(params)
+    end
+
+    def result_check(options={})
+      params = set_result_check_params options
+      request(params)
+    end
+
     def charge
     end
   end
