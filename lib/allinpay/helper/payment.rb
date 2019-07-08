@@ -149,7 +149,7 @@ module Allinpay
 
       def set_withdraw_params(tran)
         tran = handle_params(tran)
-        params = default_pay_options('310011')
+        params = default_pay_options('310011', tran['trade_no'])
         tran_body = {
             MERCHANT_ID: configurate.merchant,
             BUSINESS_CODE: '19900', # 业务类型, 上线时根据商务给出的修改
