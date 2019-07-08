@@ -3,7 +3,7 @@ require "active_support/core_ext/hash/indifferent_access"
 module Allinpay
   module Helper
     module Payment
-      def default_pay_options(code)
+      def default_pay_options(code, trade_no = nil)
         info = {
             TRX_CODE: code,
             VERSION: '04',
@@ -12,7 +12,7 @@ module Allinpay
             MERCHANT_ID: configurate.merchant,
             USER_NAME: configurate.username,
             USER_PASS: configurate.password,
-            REQ_SN: req_sn
+            REQ_SN: trade_no.presence || req_sn
         }
 
         {INFO: info}
@@ -147,7 +147,7 @@ module Allinpay
         params
       end
 
-      def set_withhold_params(tran)
+      def set_withdraw_params(tran)
         tran = handle_params(tran)
         params = default_pay_options('310011')
         tran_body = {

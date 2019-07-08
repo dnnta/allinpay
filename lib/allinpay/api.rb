@@ -68,8 +68,8 @@ module Allinpay
       request(params)
     end
 
-    def withhold(options={})
-      params = set_withhold_params options
+    def withdraw(options={})
+      params = set_withdraw_params options
       request(params)
     end
 
